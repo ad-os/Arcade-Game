@@ -7,18 +7,19 @@ var doc = document,
 	ctx = canvas.getContext('2d'),
 	numLevel = 1,
 	flag = 0,
-	enemyRandomPosition = [70, 140, 210];
+	enemyRandomPosition = [70, 140, 225];
 
 canvas.width = 505;
 canvas.height = 606;
-doc.body.appendChild(canvas);
+$(".canvas").append(canvas);
+//doc.body.appendChild(canvas);
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
 	this.sprite = 'images/enemy-bug.png';
 	this.x = x;
 	this.y = y;
-	this.speed = this.getRandomSpeed(100, 400);
+	this.speed = this.getRandomSpeed(100, 300);
 };
 
 Enemy.prototype.getRandomSpeed = function(min, max) {
@@ -53,15 +54,15 @@ Player.prototype.render = function() {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Player.prototype.update = function() {
+Player.prototype.update = function(dt) {
 	if (this.direction == 'left' && this.x > 0) {
-		this.x -= 101;
+		this.x -= dt*400;
 	} else if (this.direction == 'right' && this.x < 404) {
-		this.x += 101;
-	} else if (this.direction == 'down' && this.y < 70*4) {
-		this.y += 70;
+		this.x += dt*400;
+	} else if (this.direction == 'down' && this.y < 75*4) {
+		this.y += dt*400;
 	} else if (this.direction == 'up' && this.y > 0) {
-		this.y -= 70;
+		this.y -= dt*400;
 	}
 	this.collision();
 	this.levelUp();
@@ -81,21 +82,21 @@ Player.prototype.collision = function() {
 		bY = allEnemies[i].y;
 		if (pX < (bX + 101) && bX < (pX + 101) && pY < (bY + 70) && bY < (pY + 70)){
 			player.x = 101*2;
-			player.y = 70*4;
+			player.y = 75*4;
 		}
 	}
 }
 
 Player.prototype.levelUp = function() {
-	if (player.y == 0) {
-		console.log("Level Completed! Congrats!");
+	if (player.y <= 0) {
+		console.log("Level Completed");
 		player.x = 101*2;
-		player.y = 70*4;
+		player.y = 75*4;
 		numLevel += 1;
 		var enemy = new Enemy(0, enemyRandomPosition[Math.floor(Math.random()*3)]);
 		allEnemies.push(enemy);
+		$('.level').text(numLevel);
 	}
-	console.log(numLevel);
 }
 
 //Initializing the player and enemy objects.
@@ -112,27 +113,33 @@ canvas.addEventListener('mousedown', function(e) {
 	if (y > 83*5 && y <= 83*6) {
 		if (x > 101 && x <= 202 ) {
 			flag = 1;
-			player = new Player(101*2, 70*4, 'images/char-boy.png');
-		} else {
+			player = new Player(101*2, 75*4, 'images/char-boy.png');
+		} else if(x > 202 && x <= 303)  {
 			flag = 1;
-			player = new Player(101*2, 70*4, 'images/char-cat-girl.png');			
+			player = new Player(101*2, 75*4, 'images/char-cat-girl.png');			
+		} else if(x > 303 && x <= 404)  {
+			flag = 1;
+			player = new Player(101*2, 75*4, 'images/char-horn-girl.png');			
 		}
 	}
 });
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method.
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
 	var allowedKeys = {
 		37: 'left',
 		38: 'up',
 		39: 'right',
 		40: 'down'
 	};
-	player.handleInput(allowedKeys[e.keyCode]);
+	if (flag) {
+		player.handleInput(allowedKeys[e.keyCode]);
+	}
 });
 
 //To do the number of stars you get the number of fire you can make.
 //Add a timer gor completion of level.
 //Add a level indicator.
 //Smooth scrolling of the player.
+//Make the area large. More obstacles as the level goes up

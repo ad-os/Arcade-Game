@@ -79,11 +79,11 @@ var Engine = (function() {
 	 * render methods.
 	 */
 	function updateEntities(dt) {
-		if (flag) {
 		allEnemies.forEach(function(enemy) {
 			enemy.update(dt);
 		});
-		player.update();
+		if (flag) {
+			player.update(dt);
 		}
 	}
 
@@ -149,10 +149,11 @@ var Engine = (function() {
 		/* Loop through all of the objects within the allEnemies array and call
 		 * the render function you have defined.
 		 */
+		
+		allEnemies.forEach(function(enemy) {
+			enemy.render();
+		});
 		if (flag) {
-			allEnemies.forEach(function(enemy) {
-				enemy.render();
-			});
 			player.render();
 		}
 	}

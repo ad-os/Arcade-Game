@@ -1,8 +1,16 @@
 body {
-    text-align: center;
+    background-image: url('background.png');
 }
 
-canvas {
-	margin: 0;
-	padding: 0;
+.center {
+	text-align: center;
 }
+
+.margin {
+	margin: 50px 0 0 0;
+}
+
+.min-height {
+	min-height: 290px;
+}
+
