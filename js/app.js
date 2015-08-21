@@ -15,13 +15,13 @@ var doc = document,
 canvas.width = 505;
 canvas.height = 606;
 $(".canvas").append(canvas);
+
+/*The styling for the clock canvas*/
 cx.strokeStyle = '#28d1fa';
 cx.lineWidth = 8;
 cx.lineCap = 'round';
 cx.shadowBlur = 10;
 cx.shadowColor = '#28d1fa';
-
-//doc.body.appendChild(canvas);
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
@@ -211,6 +211,3 @@ document.addEventListener('keydown', function(e) {
 		player.handleInput(allowedKeys[e.keyCode]);
 	}
 });
-
-//To do the number of stars you get the number of fire you can make.
-//Make the area large. More obstacles as the level goes up.
