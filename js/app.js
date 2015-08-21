@@ -181,7 +181,7 @@ var clock = new Clock();
 
 //This listens for click on the player.
 
-canvas.addEventListener('mousedown', function(e) {
+canvas.addEventListener('click', function(e) {
 	var x = e.x - canvas.offsetLeft;
 	var y = e.y - canvas.offsetTop - 54;
 	if (y > 83*5 && y <= 83*6) {
