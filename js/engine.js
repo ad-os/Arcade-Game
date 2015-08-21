@@ -124,7 +124,7 @@ var Engine = (function() {
 				 */
 				ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
 			}
-		}  
+		}
 		renderPlayers(); 
 		renderEntities();
 	}
@@ -155,6 +155,10 @@ var Engine = (function() {
 		});
 		if (flag) {
 			player.render();
+			if (!clockIsShowing) {
+				clock.init();
+				clockIsShowing = 1;
+			}
 		}
 	}
 
@@ -182,3 +186,4 @@ var Engine = (function() {
 	Resources.onReady(init);
 
 })();
+

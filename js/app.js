@@ -7,11 +7,20 @@ var doc = document,
 	ctx = canvas.getContext('2d'),
 	numLevel = 1,
 	flag = 0,
-	enemyRandomPosition = [70, 140, 225];
+	enemyRandomPosition = [70, 140, 225],
+	c = doc.getElementById('timer'),
+	cx = c.getContext('2d'),
+	clockIsShowing = 0;
 
 canvas.width = 505;
 canvas.height = 606;
 $(".canvas").append(canvas);
+cx.strokeStyle = '#28d1fa';
+cx.lineWidth = 8;
+cx.lineCap = 'round';
+cx.shadowBlur = 10;
+cx.shadowColor = '#28d1fa';
+
 //doc.body.appendChild(canvas);
 
 // Enemies our player must avoid
@@ -89,21 +98,86 @@ Player.prototype.collision = function() {
 
 Player.prototype.levelUp = function() {
 	if (player.y <= 0) {
-		console.log("Level Completed");
+		Materialize.toast("Level Completed!", 1000, 'rounded');
 		player.x = 101*2;
 		player.y = 75*4;
 		numLevel += 1;
 		var enemy = new Enemy(0, enemyRandomPosition[Math.floor(Math.random()*3)]);
 		allEnemies.push(enemy);
 		$('.level').text(numLevel);
+		clock.reset();
 	}
 }
 
-//Initializing the player and enemy objects.
+Player.prototype.gameOver = function() {
+	var enemy = new Enemy(0, enemyRandomPosition[Math.floor(Math.random()*3)]);
+	allEnemies = [enemy];
+	numLevel = 1;
+	$('.level').text(numLevel);
+	player.x = 101*2;
+	player.y = 75*4;
+	clock.reset();
+}
+
+var Clock = function() {
+	this.start_time = 59;
+	this.name = "clock";
+}
+
+Clock.prototype.init = function() {
+	this.reset();
+	setInterval(this.name + '.tick()', 1000);
+}
+
+Clock.prototype.reset = function() {
+	this.seconds = this.start_time;
+	this.renderTime();
+}
+
+Clock.prototype.tick = function() {
+	if (this.seconds >= 0) {
+		this.seconds--;
+		if (this.seconds < 0) {
+			alert("Game Over!");
+			player.gameOver();
+		} else if (this.seconds == 10) {
+			Materialize.toast('Hurry! You are running out of time.', 2000, 'rounded');
+		}
+	}
+	this.renderTime();
+}
+
+Clock.prototype.show = function() {
+	this.seconds = 00;
+	this.renderTime();
+}
+
+Clock.prototype.degToRad = function(degree) {
+	var factor = (Math.PI)/180;
+	return degree*factor;
+}
+
+Clock.prototype.renderTime = function() {
+	cx.fillStyle = '#566E7A';
+	cx.fillRect(0, 0, 370, 170);
+	cx.beginPath();
+	cx.arc(170, 85, 70, this.degToRad(270), this.degToRad((this.seconds*6)-90));
+	cx.stroke();
+	cx.font = "28px Arial";
+	cx.fillStyle = '#28d1fa';
+	if (this.seconds < 10) {
+		cx.fillText('0'+this.seconds, 156, 95);
+	} else {
+		cx.fillText(this.seconds, 156, 95);
+	}
+}
+
+//Initializing the player, enemy and clock objects.
 
 var enemy = new Enemy(0, enemyRandomPosition[Math.floor(Math.random()*3)]);
 var player;
 var allEnemies = [enemy];
+var clock = new Clock();
 
 //This listens for click on the player.
 
@@ -139,7 +213,4 @@ document.addEventListener('keydown', function(e) {
 });
 
 //To do the number of stars you get the number of fire you can make.
-//Add a timer gor completion of level.
-//Add a level indicator.
-//Smooth scrolling of the player.
-//Make the area large. More obstacles as the level goes up
+//Make the area large. More obstacles as the level goes up.

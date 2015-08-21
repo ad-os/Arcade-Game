@@ -2,6 +2,19 @@ body {
     background-image: url('background.png');
 }
 
+p {
+	font-family: 'Open Sans Condensed', sans-serif;
+	font-size: 20px;
+}
+
+h1 {
+	color: rgb(45, 184, 137);
+}
+
+.card .card-content p {
+	color: #c9ff05;
+}
+
 .center {
 	text-align: center;
 }
