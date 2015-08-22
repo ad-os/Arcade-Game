@@ -20,14 +20,14 @@
  */
 var doc = document,
 	win = window,
-	canvas = doc.createElement('canvas'), 	//This canvas element is for rendering game.
+	canvas = doc.createElement('canvas'), //This canvas element is for rendering game.
 	ctx = canvas.getContext('2d'),
 	numLevel = 1,
-	flag = 0, 								//This flag variable checks whether the player has been selected or not.
-	enemyRandomPosition = [70, 140, 225], 	//This list is for selecting random positons of enemy.
-	c = doc.getElementById('timer'), 		//This canvas element is for rendering clock.
+	flag = 0, //This flag variable checks whether the player has been selected or not.
+	enemyRandomPosition = [70, 140, 225], //This list is for selecting random positons of enemy.
+	c = doc.getElementById('timer'), //This canvas element is for rendering clock.
 	cx = c.getContext('2d'),
-	clockIsShowing = 0; 					//This variable checks whether the clock is being shown or not.
+	clockIsShowing = 0; //This variable checks whether the clock is being shown or not.
 
 canvas.width = 505;
 canvas.height = 606;
