@@ -13,6 +13,8 @@
  *use it without any errors.
  */
 
+"use strict";
+
 /*create the canvas element, grab the 2D context for that canvas
  *set the canvas elements height/width and add it to the DOM.
  */
@@ -43,10 +45,9 @@ cx.shadowColor = '#28d1fa';
  *example include getRandomSpeed(), update(), render().		
  */
 var Enemy = function(x, y) {
-	this.sprite = 'images/enemy-bug.png';
 	this.x = x;
 	this.y = y;
-	this.speed = this.getRandomSpeed(100, 300);
+	this.sprite = 'images/enemy-bug.png';
 };
 
 /*
@@ -69,7 +70,7 @@ Enemy.prototype.update = function(dt) {
 	if (this.x > 505) {
 		this.x = 0;
 	} else {
-		this.x = Math.floor(this.x + this.speed * dt);
+		this.x = Math.floor(this.x + this.getRandomSpeed(200, 400) * dt);
 	}
 };
 
@@ -85,8 +86,7 @@ Enemy.prototype.render = function() {
  *example includes update(), render(), collision(), levelUp(), gameOver(), handleInput().		
  */
 var Player = function(x, y, image) {
-	this.x = x;
-	this.y = y;
+	Enemy.call(this, x, y);
 	this.sprite = image;
 };
 
@@ -103,13 +103,13 @@ Player.prototype.render = function() {
  */
 Player.prototype.update = function(dt) {
 	if (this.direction == 'left' && this.x > 0) {
-		this.x -= dt * 400;
+		this.x -= dt * 600;
 	} else if (this.direction == 'right' && this.x < 404) {
-		this.x += dt * 400;
+		this.x += dt * 600;
 	} else if (this.direction == 'down' && this.y < 75 * 4) {
-		this.y += dt * 400;
+		this.y += dt * 600;
 	} else if (this.direction == 'up' && this.y > 0) {
-		this.y -= dt * 400;
+		this.y -= dt * 600;
 	}
 	this.collision();
 	this.levelUp();
