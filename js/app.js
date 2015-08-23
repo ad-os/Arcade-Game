@@ -90,6 +90,8 @@ var Player = function(x, y, image) {
 	this.sprite = image;
 };
 
+Player.prototype.constructor = Player;
+
 /*
  *@desc Draw the player on the screen.		
  */
@@ -147,7 +149,7 @@ Player.prototype.collision = function() {
  *@desc increases the level if player reaches the water.
  */
 Player.prototype.levelUp = function() {
-	if (player.y <= 0) {
+	if (this.y <= 0) {
 		Materialize.toast("Level Completed!", 1000, 'rounded');
 		this.x = 101 * 2;
 		this.y = 75 * 4;

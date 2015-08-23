@@ -46,7 +46,7 @@ var Engine = (function() {
 		 * function again as soon as the browser is able to draw another frame.
 		 */
 		win.requestAnimationFrame(main);
-	};
+	}
 
 	/* This function does some initial setup that should only occur once,
 	 * particularly setting the lastTime variable that is required for the
