@@ -27,7 +27,8 @@ var doc = document,
 	enemyRandomPosition = [70, 140, 225], //This list is for selecting random positons of enemy.
 	c = doc.getElementById('timer'), //This canvas element is for rendering clock.
 	cx = c.getContext('2d'),
-	clockIsShowing = 0; //This variable checks whether the clock is being shown or not.
+	clockIsShowing = 0,  //This variable checks whether the clock is being shown or not.
+	keyState = {};//Keeps track of which key is being pressed.
 
 canvas.width = 505;
 canvas.height = 606;
@@ -104,26 +105,17 @@ Player.prototype.render = function() {
  *@params float dt- a time delta between ticks			
  */
 Player.prototype.update = function(dt) {
-	if (this.direction == 'left' && this.x > 0) {
-		this.x -= dt * 600;
-	} else if (this.direction == 'right' && this.x < 404) {
-		this.x += dt * 600;
-	} else if (this.direction == 'down' && this.y < 75 * 4) {
-		this.y += dt * 600;
-	} else if (this.direction == 'up' && this.y > 0) {
-		this.y -= dt * 600;
+	if (keyState['left'] && this.x > 0) {
+		this.x -= dt * 400;
+	} else if (keyState['right'] && this.x < 404) {
+		this.x += dt * 400;
+	} else if (keyState['down'] && this.y < 75 * 4) {
+		this.y += dt * 400;
+	} else if (keyState['up'] && this.y > 0) {
+		this.y -= dt * 400;
 	}
 	this.collision();
 	this.levelUp();
-	this.direction = '';
-};
-
-/*
- *@desc sets which direction key was pressed.
- *@params string key- direction name.			
- */
-Player.prototype.handleInput = function(key) {
-	this.direction = key;
 };
 
 /*
@@ -276,7 +268,7 @@ canvas.addEventListener('click', function(e) {
 });
 
 /*
- *@desc This listens for key presses and sends the keys to your Player.handleInput() method.
+ *@desc This listens for key presses and sets it's state to true.
  */
 document.addEventListener('keydown', function(e) {
 	var allowedKeys = {
@@ -286,6 +278,21 @@ document.addEventListener('keydown', function(e) {
 		40: 'down'
 	};
 	if (flag) {
-		player.handleInput(allowedKeys[e.keyCode]);
+		keyState[allowedKeys[e.keyCode]] = true;
+	}
+});
+
+/*
+ *@desc This listens for when the key is released and sets it's state to false.
+ */
+document.addEventListener('keyup', function(e) {
+	var allowedKeys = {
+		37: 'left',
+		38: 'up',
+		39: 'right',
+		40: 'down'
+	};
+	if (flag) {
+		keyState[allowedKeys[e.keyCode]] = false;
 	}
 });
