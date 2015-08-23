@@ -13,19 +13,22 @@
  *use it without any errors.
  */
 
+"use strict";
+
 /*create the canvas element, grab the 2D context for that canvas
  *set the canvas elements height/width and add it to the DOM.
  */
 var doc = document,
 	win = window,
-	canvas = doc.createElement('canvas'), 	//This canvas element is for rendering game.
+	canvas = doc.createElement('canvas'), //This canvas element is for rendering game.
 	ctx = canvas.getContext('2d'),
 	numLevel = 1,
-	flag = 0, 								//This flag variable checks whether the player has been selected or not.
-	enemyRandomPosition = [70, 140, 225], 	//This list is for selecting random positons of enemy.
-	c = doc.getElementById('timer'), 		//This canvas element is for rendering clock.
+	flag = 0, //This flag variable checks whether the player has been selected or not.
+	enemyRandomPosition = [70, 140, 225], //This list is for selecting random positons of enemy.
+	c = doc.getElementById('timer'), //This canvas element is for rendering clock.
 	cx = c.getContext('2d'),
-	clockIsShowing = 0; 					//This variable checks whether the clock is being shown or not.
+	clockIsShowing = 0,  //This variable checks whether the clock is being shown or not.
+	keyState = {};//Keeps track of which key is being pressed.
 
 canvas.width = 505;
 canvas.height = 606;
@@ -43,10 +46,9 @@ cx.shadowColor = '#28d1fa';
  *example include getRandomSpeed(), update(), render().		
  */
 var Enemy = function(x, y) {
-	this.sprite = 'images/enemy-bug.png';
 	this.x = x;
 	this.y = y;
-	this.speed = this.getRandomSpeed(100, 300);
+	this.sprite = 'images/enemy-bug.png';
 };
 
 /*
@@ -69,7 +71,7 @@ Enemy.prototype.update = function(dt) {
 	if (this.x > 505) {
 		this.x = 0;
 	} else {
-		this.x = Math.floor(this.x + this.speed * dt);
+		this.x = Math.floor(this.x + this.getRandomSpeed(200, 400) * dt);
 	}
 };
 
@@ -85,10 +87,11 @@ Enemy.prototype.render = function() {
  *example includes update(), render(), collision(), levelUp(), gameOver(), handleInput().		
  */
 var Player = function(x, y, image) {
-	this.x = x;
-	this.y = y;
+	Enemy.call(this, x, y);
 	this.sprite = image;
 };
+
+Player.prototype.constructor = Player;
 
 /*
  *@desc Draw the player on the screen.		
@@ -102,26 +105,17 @@ Player.prototype.render = function() {
  *@params float dt- a time delta between ticks			
  */
 Player.prototype.update = function(dt) {
-	if (this.direction == 'left' && this.x > 0) {
+	if (keyState['left'] && this.x > 0) {
 		this.x -= dt * 400;
-	} else if (this.direction == 'right' && this.x < 404) {
+	} else if (keyState['right'] && this.x < 404) {
 		this.x += dt * 400;
-	} else if (this.direction == 'down' && this.y < 75 * 4) {
+	} else if (keyState['down'] && this.y < 75 * 4) {
 		this.y += dt * 400;
-	} else if (this.direction == 'up' && this.y > 0) {
+	} else if (keyState['up'] && this.y > 0) {
 		this.y -= dt * 400;
 	}
 	this.collision();
 	this.levelUp();
-	this.direction = '';
-};
-
-/*
- *@desc sets which direction key was pressed.
- *@params string key- direction name.			
- */
-Player.prototype.handleInput = function(key) {
-	this.direction = key;
 };
 
 /*
@@ -147,7 +141,7 @@ Player.prototype.collision = function() {
  *@desc increases the level if player reaches the water.
  */
 Player.prototype.levelUp = function() {
-	if (player.y <= 0) {
+	if (this.y <= 0) {
 		Materialize.toast("Level Completed!", 1000, 'rounded');
 		this.x = 101 * 2;
 		this.y = 75 * 4;
@@ -274,7 +268,7 @@ canvas.addEventListener('click', function(e) {
 });
 
 /*
- *@desc This listens for key presses and sends the keys to your Player.handleInput() method.
+ *@desc This listens for key presses and sets it's state to true.
  */
 document.addEventListener('keydown', function(e) {
 	var allowedKeys = {
@@ -284,6 +278,21 @@ document.addEventListener('keydown', function(e) {
 		40: 'down'
 	};
 	if (flag) {
-		player.handleInput(allowedKeys[e.keyCode]);
+		keyState[allowedKeys[e.keyCode]] = true;
+	}
+});
+
+/*
+ *@desc This listens for when the key is released and sets it's state to false.
+ */
+document.addEventListener('keyup', function(e) {
+	var allowedKeys = {
+		37: 'left',
+		38: 'up',
+		39: 'right',
+		40: 'down'
+	};
+	if (flag) {
+		keyState[allowedKeys[e.keyCode]] = false;
 	}
 });
